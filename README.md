@@ -130,14 +130,14 @@ In this form, the information for the course name is set up as `student[course][
 
 But this leaves us with a much bigger problem. How do we now handle **two** (or more!) courses?
 
-Again, we need to restructure how we want the data coming in the `params` hash. The `course` key should store an array of nested hashes:
+Again, we need to restructure how we want the data coming in the `params` hash. The `courses` key should store an array of nested hashes:
 
 ```ruby
 params = { 
   "student"=> {
     "name"=>"vic",
     "grade"=>"12",
-    "course"=> [
+    "courses"=> [
       {
         "name"=> "ap us history", 
         "topic"=>"history"
@@ -161,15 +161,15 @@ The HTML for the form looks like this:
 <form action="/student" method="post">
   Student Name: <input type="text" name="student[name]">
   Student Grade: <input type="text" name="student[grade]">
-  Course Name: <input type="text" name="student[course][][name]" />
-  Course Topic: <input type="text" name="student[course][][topic]" />
-  Course Name: <input type="text" name="student[course][][name]" />
-  Course Topic: <input type="text" name="student[course][][topic]" />
+  Course Name: <input type="text" name="student[courses][][name]" />
+  Course Topic: <input type="text" name="student[courses][][topic]" />
+  Course Name: <input type="text" name="student[courses][][name]" />
+  Course Topic: <input type="text" name="student[courses][][topic]" />
   <input type="submit">
 </form>
 ```
 
-Now, we've added four more input fields, which will create TWO courses. Again, because the student has many courses in their schedule, we're nested the courses under the student `student[course][][name]`. This will create a key called `course` inside the `student` hash in the params. The `course` key will store an array of hashes, each with the details about the course details.
+Now, we've added four more input fields, which will create TWO courses. Again, because the student has many courses in their schedule, we're nested the courses under the student `student[courses][][name]`. This will create a key called `course` inside the `student` hash in the params. The `courses` key will store an array of hashes, each with the details about the course details.
 
 
 
