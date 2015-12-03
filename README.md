@@ -62,75 +62,156 @@ Here, we have a reader for `name` and `topic` and we set the value of those attr
 
 ## Creating The Form
 
-The first thing we need is to create the form. For later use in the controller, we'll call this file `new.erb`. We'll start with a basic HTML form:
+The first thing we need is to create the form. For later use in the controller, we'll call this file `new.erb`. 
 
-```html
-<form action="/student" method="post">
-  <input type="submit">
-</form>
-```
-
-We know this form is going to get submitted via a POST request and processed by a controller action. In this case, we've named the action `/student`.
-
-Now let's go ahead and create the part of the form to create the student:
-
-```html
-<form action="/student" method="post">
-  Student Name: <input type="text" name="student[name]">
-  Student Grade: <input type="text" name="student[grade]">
-  <input type="submit">
-</form>
-```
-
-You'll notice the `name` attribute of the `input` tag is set up like `student[name]`. This way, when the form gets submitted, the params sent to the `/students` controller action will look like this:
+Before we dive into the HTML, let's think about how we want to structure the data our controller action will receive. Typically, if we were just doing student information, we would expect the `params` hash to look something like this:
 
 ```ruby
-params = { 
-  "student"=> {
-    "name"=> "vic",
-    "grade"=>"12"
+params = {
+  "name" => "Joe",
+  "grade" => 9
+}
+```
+
+But how do we handle a student **and** a course? Both course and student have a `name` attribute. If keys in hashes have to be unique, we can't have `name` twice. We could call our keys `student_name` and `course_name`, but that really isn't best practice. And how would it look with two courses? `course_one_name` and `course_two_name`? Suddenly our keys are getting messy.
+
+Instead, we need to think about restructuring our `params` hash to have nested hashes. We can have one hash for all the student information:
+
+```ruby
+params = {
+  "student" => {
+    "name" => "Joe",
+    "grade" => 9,
   }
 }
 ```
 
-`params` is storing a hash called `student` and that hash is storing a nested hash with the student's name and grade.
+Now we have a key `student`, which stores a hash of all the student's information, `name` and `grade`. 
 
-Next, let's go ahead and finish out the form with their course schedule:
+How would we create a hash such as this in Ruby? We'd do:
+
+```ruby
+my_hash["student"] = {}
+my_hash["student"]["name"] = "Joe"
+```
+
+Thankfully, ERB provides similar syntax. It handles that first level of nesting, so instead of having to do `my_hash["student"]={}` we can just go straight into student. It assumes the name of your hash is the first key so the resulting erb would be `student["name"]`.
+
+This makes it easy for us to insert a second nested hash for the student's course. Let's go ahead and built out the HTML for this form:
 
 ```html
 <form action="/student" method="post">
   Student Name: <input type="text" name="student[name]">
   Student Grade: <input type="text" name="student[grade]">
-  Course Name: <input type="text" name="student[course][0][name]" />
-  Course Topic: <input type="text" name="student[course][0][topic]" />
-  Course Name: <input type="text" name="student[course][1][name]" />
-  Course Topic: <input type="text" name="student[course][1][topic]" />
   <input type="submit">
 </form>
 ```
 
-Now, we've added four more input fields, which will create TWO courses. Again, because the student has many courses in their schedule, we're nested the courses under the student `student[course][0][name]`. This will create a key called `course` inside the `student` hash in the params. 
+We know this form is going to get submitted via a POST request and processed by a controller action. In this case, we've named the action `/student`. You'll notice the `name` attribute of the `input` tag is set up like `student[name]`. This way, when the form gets submitted, the params sent to the `/students` controller action will exactly like we designed.
 
-The params hash will look like this:
+
+Now, let's think about how we want a student's course to fit in the params hash:
+
+```ruby
+params = {
+  "student" => {
+    "name" => "Joe",
+    "grade" => 9,
+    "course" => {
+      "name" => "US History",
+      "topic" => "History"
+    }
+  }
+}
+```
+
+In this hash, both the student and the course can have the key `name` because they're in different namespaces. 
+
+Let's think about how we'd build this hash using Ruby:
+
+```ruby
+my_hash["student"] = {}
+my_hash["student["name"] = "Joe"
+myhash["student"]["course"] = {}
+myhash["student"]["course"]["name"] => "US History"
+myhash["student"]["course"]["course"] => "History"
+```
+Again, we can use the ERB syntax to set up or form. We can ignore the first level of nesting, the `my_hash` portion, and just straight into student and course turning `my_hash["student"]["course"]["name"] => "US History"` into `["student"]["course"]["name"]`.
+
+Let's go ahead and build out the corresponding HTML for the form:
+
+```html
+<form action="/student" method="post">
+  Student Name: <input type="text" name="student[name]">
+  Student Grade: <input type="text" name="student[grade]">
+  Course Name: <input type="text" name="student[course][name]">
+  Course Topic: <input type="text" name="student[course][topic]">
+  <input type="submit">
+</form>
+```
+
+In this form, the information for the course name is set up as `student[course][name]`, giving us the nested hashes we designed in the `params` hash. We're first accessing the `student` key.
+
+But this leaves us with a much bigger problem. How do we now handle **two** (or more!) courses?
+
+Again, we need to restructure how we want the data coming in the `params` hash. The `courses` key should store an array of nested hashes:
 
 ```ruby
 params = { 
   "student"=> {
     "name"=>"vic",
     "grade"=>"12",
-    "course"=>{
-      "0"=>{
+    "courses"=> [
+      {
         "name"=> "ap us history", 
         "topic"=>"history"
       }, 
-      "1"=>{
+      {
         "name"=>"ap human geography", 
         "topic"=>"history"
       }
-    }
+    ]
   }
 }
 ```
+
+
+
+In this case, each course is an index of the array. This simple pattern is easy to mimic no matter what objects you're creating. It's much simpler than using keys `first_course`, `second_course`, `third_course`, etc.
+
+The HTML for the form looks like this:
+
+```html
+<form action="/student" method="post">
+  Student Name: <input type="text" name="student[name]">
+  Student Grade: <input type="text" name="student[grade]">
+  Course Name: <input type="text" name="student[courses][][name]" />
+  Course Topic: <input type="text" name="student[courses][][topic]" />
+  Course Name: <input type="text" name="student[courses][][name]" />
+  Course Topic: <input type="text" name="student[courses][][topic]" />
+  <input type="submit">
+</form>
+```
+
+Now, we've added four more input fields, which will create TWO courses. Again, because the student has many courses in their schedule, we're nested the courses under the student `student[courses][][name]`. This will create a key called `course` inside the `student` hash in the params. The `courses` key will store an array of hashes, each with the details about the course details.
+
+This is where ERB syntax differs from Ruby. In Ruby, if you wanted a hash to store an array, you would do something like this:
+
+```ruby
+my_hash["student"] = {}
+my_hash["student["name"] = "Joe"
+myhash["student"]["course"] = []
+myhash["student"]["course"][0] = { "name" => "US History", "topic" => "History"}
+myhash["student"]["course"][1] = { "name" => "AP Human Geography", "topic" => "History"}
+```
+
+To access the first course's name, you would do something like:
+
+```ruby
+my_hash["student"]["course"][0]["name"]
+```
+Unfortunately, this is where the ERB syntax starts to differ from Ruby. We use the `[]` in our form view and ERB can automagically index the array for us, turning `my_hash["student"]["course"][0]["name"` into `student[courses][][name]`. The `[]` is some ERB magic, that we just need to learn to accept and use. It actually helps us out, and let's us simplify our code!
+
 
 ## The Display View
 
