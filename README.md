@@ -86,7 +86,18 @@ params = {
 }
 ```
 
-Now we have a key `student`, which stores a hash of all the student's information, `name` and `grade`. This makes it easy for us to insert a second nested hash for the student's course. Let's go ahead and built out the HTML for this form:
+Now we have a key `student`, which stores a hash of all the student's information, `name` and `grade`. 
+
+How would we create a hash such as this in Ruby? We'd do:
+
+```ruby
+my_hash["student"] = {}
+my_hash["student"]["name"] = "Joe"
+```
+
+Thankfully, ERB provides similar syntax. It handles that first level of nesting, so instead of having to do `my_hash["student"]={}` we can just go straight into student. It assumes the name of your hash is the first key so the resulting erb would be `student["name"]`.
+
+This makes it easy for us to insert a second nested hash for the student's course. Let's go ahead and built out the HTML for this form:
 
 ```html
 <form action="/student" method="post">
@@ -114,7 +125,20 @@ params = {
 }
 ```
 
-In this hash, both the student and the course can have the key `name` because they're in different namespaces. Let's go ahead and build out the corresponding HTML for the form:
+In this hash, both the student and the course can have the key `name` because they're in different namespaces. 
+
+Let's think about how we'd build this hash using Ruby:
+
+```ruby
+my_hash["student"] = {}
+my_hash["student["name"] = "Joe"
+myhash["student"]["course"] = {}
+myhash["student"]["course"]["name"] => "US History"
+myhash["student"]["course"]["course"] => "History"
+```
+Again, we can use the ERB syntax to set up or form. We can ignore the first level of nesting, the `my_hash` portion, and just straight into student and course turning `my_hash["student"]["course"]["name"] => "US History"` into `["student"]["course"]["name"]`.
+
+Let's go ahead and build out the corresponding HTML for the form:
 
 ```html
 <form action="/student" method="post">
@@ -171,6 +195,22 @@ The HTML for the form looks like this:
 
 Now, we've added four more input fields, which will create TWO courses. Again, because the student has many courses in their schedule, we're nested the courses under the student `student[courses][][name]`. This will create a key called `course` inside the `student` hash in the params. The `courses` key will store an array of hashes, each with the details about the course details.
 
+This is where ERB syntax differs from Ruby. In Ruby, if you wanted a hash to store an array, you would do something like this:
+
+```ruby
+my_hash["student"] = {}
+my_hash["student["name"] = "Joe"
+myhash["student"]["course"] = []
+myhash["student"]["course"][0] = { "name" => "US History", "topic" => "History"}
+myhash["student"]["course"][1] = { "name" => "AP Human Geography", "topic" => "History"}
+```
+
+To access the first course's name, you would do something like:
+
+```ruby
+my_hash["student"]["course"][0]["name"]
+```
+Unfortunately, this is where the ERB syntax starts to differ from Ruby. We use the `[]` in our form view and ERB can automagically index the array for us, turning `my_hash["student"]["course"][0]["name"` into `student[courses][][name]`. The `[]` is some ERB magic, that we just need to learn to accept and use. It actually helps us out, and let's us simplify our code!
 
 
 ## The Display View
