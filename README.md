@@ -1,10 +1,24 @@
 # Nested Forms Readme
 
+## Overview
+
+In this code-along lesson, we'll cover nested forms that can create multiple objects.
+
+## Objectives
+
+1. Create models for each class of objects
+2. Structure data in a controller action will receive to handle multiple objects
+3. Structure the HTML in .erb files that handles nesting
+4. Create a view file that displays the objects back to the user
+5. Create two controller actions that serve up the form and processes the data from the form
+
+## Forms That Create Multiple Objects
+
 In web apps, we use forms to create objects. When you fill out a form for a dinner reservation on Open Table, you're creating a reservation object. When you upload a photo to Instagram, you're creating an image object. 
 
-Those are examples of using forms to create a single object, but what if you wanted to use a form to create more than one object? How would you do that? This is where nested forms comes in.
+Those are examples of using forms to create a single object, but what if you wanted to use a form to create more than one object? This is where nested forms comes in.
 
-Let's say we're the registrar's office at a school and it's the start of the school year. We need to create each student and their class schedule It would be tedious to go through a process that made go through the steps to first create the student, and then go through the same step again and again to create each of their courses. Wouldn't it be nice to create the student **and** their courses in one go? 
+Let's say we're the registrar's office at a school and it's the start of the school year. We need to create each student and their class schedule. It would be tedious to go through a process that goes through the steps to first create the student, and then goes through the same step again and again to create each of their courses. Wouldn't it be nice to create the student **and** their courses in one go? 
 
 ## The Models
 
@@ -97,7 +111,7 @@ my_hash["student"]["name"] = "Joe"
 
 Thankfully, ERB provides similar syntax. It handles that first level of nesting, so instead of having to do `my_hash["student"]={}` we can just go straight into student. It assumes the name of your hash is the first key so the resulting erb would be `student["name"]`.
 
-This makes it easy for us to insert a second nested hash for the student's course. Let's go ahead and built out the HTML for this form:
+This makes it easy for us to insert a second nested hash for the student's course. Let's go ahead and build out the HTML for this form:
 
 ```html
 <form action="/student" method="post">
@@ -136,7 +150,7 @@ myhash["student"]["course"] = {}
 myhash["student"]["course"]["name"] => "US History"
 myhash["student"]["course"]["course"] => "History"
 ```
-Again, we can use the ERB syntax to set up or form. We can ignore the first level of nesting, the `my_hash` portion, and just straight into student and course turning `my_hash["student"]["course"]["name"] => "US History"` into `["student"]["course"]["name"]`.
+Again, we can use the ERB syntax to set up our form. We can ignore the first level of nesting, the `my_hash` portion, and just dive straight into student and course, turning `my_hash["student"]["course"]["name"] => "US History"` into `["student"]["course"]["name"]`.
 
 Let's go ahead and build out the corresponding HTML for the form:
 
