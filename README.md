@@ -308,4 +308,4 @@ Lastly, this controller action loads the erb file `student.erb`
 
 
 
-<a href='https://learn.co/lessons/sinatra-nested-forms-readme' data-visibility='hidden'>View this lesson on Learn.co</a>
+<p data-visibility='hidden'>View <a href='https://learn.co/lessons/sinatra-nested-forms-readme' title='Nested Forms Readme'>Nested Forms Readme</a> on Learn.co and start learning to code for free.</p>
