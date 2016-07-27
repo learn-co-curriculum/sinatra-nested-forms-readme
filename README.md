@@ -7,29 +7,28 @@ In this code-along lesson, we'll cover nested forms that can create multiple obj
 ## Objectives
 
 1. Create models for each class of objects
-2. Structure data in a controller action will receive to handle multiple objects
-3. Structure the HTML in .erb files that handles nesting
+2. Structure data that a controller action will receive to handle multiple objects
+3. Structure the HTML in `.erb` files that handle nesting
 4. Create a view file that displays the objects back to the user
-5. Create two controller actions that serve up the form and processes the data from the form
+5. Create two controller actions that serve up the form and process the data from the form
 
 ## Forms That Create Multiple Objects
 
-In web apps, we use forms to create objects. When you fill out a form for a dinner reservation on Open Table, you're creating a reservation object. When you upload a photo to Instagram, you're creating an image object. 
+In web apps, we use forms to create objects. When you fill out a form for a dinner reservation on Open Table, you're creating a reservation object. When you upload a photo to Instagram, you're creating an image object.
 
 Those are examples of using forms to create a single object, but what if you wanted to use a form to create more than one object? This is where nested forms comes in.
 
-Let's say we're the registrar's office at a school and it's the start of the school year. We need to create each student and their class schedule. It would be tedious to go through a process that goes through the steps to first create the student, and then goes through the same step again and again to create each of their courses. Wouldn't it be nice to create the student **and** their courses in one go? 
+Let's say we're the registrar's office at a school and it's the start of the school year. We need to create each student and their class schedule. It would be tedious to go through the steps to first create the student and then go through the same steps again and again to create each of that student's courses. Wouldn't it be nice to create the student **and** their courses in one go?
 
 ## The Models
 
 To create these two different classes of objects, we need to create two models, `Student` and `Course`.
 
-### Student Class
+### `Student` Class
 
-Our student class, with name and grade attributes will look something like this:
+Our `Student` class, with `name` and `grade` attributes, will look something like this:
 
 ```ruby
-
 class Student
   attr_reader :name, :grade
 
@@ -48,9 +47,9 @@ class Student
 end
 ```
 
-In this model, we have an attr_reader for `name` and `grade`, and we set the value of those attributes on initialization. We also set up a class method `self.all` which returns an array of all the students
+In this model, we have an `attr_reader` for `name` and `grade`, and we set the value of those attributes on initialization. We also set up the class method `self.all`, which returns an array containing all of the students.
 
-### Course Class
+### `Course` Class
 
 Now let's set up the model for the courses each student is taking.
 
@@ -72,9 +71,9 @@ class Course
 end
 ```
 
-Here, we have a reader for `name` and `topic` and we set the value of those attributes on initialization. We also have the class method `self.all` to return all the courses.
+Here, exactly like with our `Student` class, we have an `attr_reader` for `name` and `topic`, and we set the value of those attributes on initialization. We also have a `self.all` class method to return all of the courses.
 
-## Creating The Form
+## Creating the Form
 
 The first thing we need is to create the form. For later use in the controller, we'll call this file `new.erb`. 
 
@@ -87,9 +86,9 @@ params = {
 }
 ```
 
-But how do we handle a student **and** a course? Both course and student have a `name` attribute. If keys in hashes have to be unique, we can't have `name` twice. We could call our keys `student_name` and `course_name`, but that really isn't best practice. And how would it look with two courses? `course_one_name` and `course_two_name`? Suddenly our keys are getting messy.
+But how do we handle a student **and** a course? Both course and student have a `name` attribute. If keys in hashes have to be unique, we can't have `name` twice. We could call our keys `student_name` and `course_name`, but that really isn't best practice. And how would the hash look with two courses? `course_one_name` and `course_two_name`? Suddenly our keys are getting messy.
 
-Instead, we need to think about restructuring our `params` hash to have nested hashes. We can have one hash for all the student information:
+Instead, we need to think about restructuring our `params` hash to have nested hashes. We can have one hash for all of the student information:
 
 ```ruby
 params = {
@@ -100,18 +99,18 @@ params = {
 }
 ```
 
-Now we have a key `student`, which stores a hash of all the student's information, `name` and `grade`. 
+Now we have a `student` key that stores a hash containing a given student's `name` and `grade`.
 
-How would we create a hash such as this in Ruby? We'd do:
+How would we create a hash like this in Ruby? Like so:
 
 ```ruby
 my_hash["student"] = {}
 my_hash["student"]["name"] = "Joe"
 ```
 
-Thankfully, ERB provides similar syntax. It handles that first level of nesting, so instead of having to do `my_hash["student"]={}` we can just go straight into student. It assumes the name of your hash is the first key so the resulting erb would be `student["name"]`.
+Thankfully, ERB provides a similar syntax. It handles that first level of nesting, so instead of having to do `my_hash["student"]={}` we can just go straight into the `student` hash. ERB assumes that the name of your top-level hash is the first key, so the code to call the value associated with the nested `"name"` key would be `student["name"]`.
 
-This makes it easy for us to insert a second nested hash for the student's course. Let's go ahead and build out the HTML for this form:
+This makes it easy for us to insert a second nested hash to hold the student's course(s). Let's go ahead and build out the HTML for this form:
 
 ```html
 <form action="/student" method="post">
@@ -121,16 +120,15 @@ This makes it easy for us to insert a second nested hash for the student's cours
 </form>
 ```
 
-We know this form is going to get submitted via a POST request and processed by a controller action. In this case, we've named the action `/student`. You'll notice the `name` attribute of the `input` tag is set up like `student[name]`. This way, when the form gets submitted, the params sent to the `/students` controller action will exactly like we designed.
+We know this form is going to get submitted via a POST request and processed by a controller action. In this case, we've named the action `/student`. You'll notice the `name` attribute of the `input` tag is set up as `student[name]`. This way, when the form gets submitted, the `params` sent to the `/students` controller action will look exactly as we planned.
 
-
-Now, let's think about how we want a student's course to fit in the params hash:
+Now, let's think about how we want a course to fit in a student's `params` hash:
 
 ```ruby
 params = {
   "student" => {
     "name" => "Joe",
-    "grade" => 9,
+    "grade" => "9",
     "course" => {
       "name" => "US History",
       "topic" => "History"
@@ -139,18 +137,23 @@ params = {
 }
 ```
 
-In this hash, both the student and the course can have the key `name` because they're in different namespaces. 
+In this hash, both `student` and `course` can have the key `name` because they're in different namespaces.
 
 Let's think about how we'd build this hash using Ruby:
 
 ```ruby
+my_hash = {}
 my_hash["student"] = {}
-my_hash["student["name"] = "Joe"
-myhash["student"]["course"] = {}
-myhash["student"]["course"]["name"] => "US History"
-myhash["student"]["course"]["course"] => "History"
+my_hash["student"]["name"] = "Joe"
+my_hash["student"]["course"] = {}
+my_hash["student"]["course"]["name"] = "US History"
+my_hash["student"]["course"]["topic"] = "History"
+
+my_hash
+  => {"student"=>{"name"=>"Joe", "course"=>{"name"=>"US History", "topic"=>"History"}}}
 ```
-Again, we can use the ERB syntax to set up our form. We can ignore the first level of nesting, the `my_hash` portion, and just dive straight into student and course, turning `my_hash["student"]["course"]["name"] => "US History"` into `["student"]["course"]["name"]`.
+
+Again, we can use the ERB syntax to set up our form. We can ignore the first level of nesting, the `my_hash` portion, and just dive straight into `student` and `course`, turning `my_hash["student"]["course"]["name"]` into `student[course][name]`.
 
 Let's go ahead and build out the corresponding HTML for the form:
 
@@ -164,34 +167,30 @@ Let's go ahead and build out the corresponding HTML for the form:
 </form>
 ```
 
-In this form, the information for the course name is set up as `student[course][name]`, giving us the nested hashes we designed in the `params` hash. We're first accessing the `student` key.
+In this form, a given `course`'s `name` value is stored in `student[course][name]`, conforming to the nested design we outlined above. But this leaves us with a much bigger problem. How do we handle **two** (or more!) courses?
 
-But this leaves us with a much bigger problem. How do we now handle **two** (or more!) courses?
-
-Again, we need to restructure how we want the data coming in the `params` hash. The `courses` key should store an array of nested hashes:
+We need to once again restructure how we want to store data in the `params` hash. To allow for multiple courses, the `courses` key should store an array of nested hashes:
 
 ```ruby
 params = { 
-  "student"=> {
-    "name"=>"vic",
-    "grade"=>"12",
-    "courses"=> [
+  "student" => {
+    "name" => "Vic",
+    "grade" => "12",
+    "courses" => [
       {
-        "name"=> "ap us history", 
-        "topic"=>"history"
+        "name" => "AP US History", 
+        "topic" => "History"
       }, 
       {
-        "name"=>"ap human geography", 
-        "topic"=>"history"
+        "name" => "AP Human Geography", 
+        "topic" => "History"
       }
     ]
   }
 }
 ```
 
-
-
-In this case, each course is an index of the array. This simple pattern is easy to mimic no matter what objects you're creating. It's much simpler than using keys `first_course`, `second_course`, `third_course`, etc.
+This simple, nested pattern is easy to mimic no matter what type of object you're creating. It's much simpler than creating a new key for each course, e.g., `first_course`, `second_course`, `third_course`, etc.
 
 The HTML for the form looks like this:
 
@@ -207,29 +206,32 @@ The HTML for the form looks like this:
 </form>
 ```
 
-Now, we've added four more input fields, which will create TWO courses. Again, because the student has many courses in their schedule, we're nested the courses under the student `student[courses][][name]`. This will create a key called `course` inside the `student` hash in the params. The `courses` key will store an array of hashes, each with the details about the course details.
+We removed the singular `student[course][name]` and `student[course][topic]` inputs and replaced them with pairs of inputs that allow for the creation of TWO courses. Again, because a `Student` can have multiple courses in their schedule, we've nested each student's courses within their primary hash. This creates a key called `courses` inside of the `student` hash in `params`. The `courses` key will store an array of hashes, each containing course details.
 
 This is where ERB syntax differs from Ruby. In Ruby, if you wanted a hash to store an array, you would do something like this:
 
 ```ruby
+my_hash = {}
 my_hash["student"] = {}
-my_hash["student["name"] = "Joe"
-myhash["student"]["course"] = []
-myhash["student"]["course"][0] = { "name" => "US History", "topic" => "History"}
-myhash["student"]["course"][1] = { "name" => "AP Human Geography", "topic" => "History"}
+my_hash["student"]["name"] = "Joe"
+my_hash["student"]["courses"] = []
+my_hash["student"]["courses"][0] = { "name" => "AP US History", "topic" => "History"}
+my_hash["student"]["courses"][1] = { "name" => "AP Human Geography", "topic" => "History"}
 ```
 
-To access the first course's name, you would do something like:
+To access the name of the first course, you would do something like:
 
 ```ruby
-my_hash["student"]["course"][0]["name"]
+my_hash["student"]["courses"][0]["name"]
+  => "AP US History"
 ```
-Unfortunately, this is where the ERB syntax starts to differ from Ruby. We use the `[]` in our form view and ERB can automagically index the array for us, turning `my_hash["student"]["course"][0]["name"` into `student[courses][][name]`. The `[]` is some ERB magic, that we just need to learn to accept and use. It actually helps us out, and let's us simplify our code!
+
+ERB makes it even easier on us. Instead of manually indexing each entry, we can use an empty array (`[]`) in our form view, and ERB will automagically index the array for us, turning `my_hash["student"]["courses"][0]["name"]` into `student[courses][][name]`. The `[]` is some ERB magic that we just need to accept and use. It saves us time and simplifies our code!
 
 
 ## The Display View
 
-We need a way to display the objects back to the user (in this case the registar) once the student and their courses have been created. For later use in the controller, we'll call this file `student.erb`.
+We need a way to display the objects back to the user (in this case the registrar) once the student and their courses have been created. For later use in the controller, we'll call this file `student.erb`.
 
 ```html
 <h1>Student</h1>
@@ -240,23 +242,23 @@ We need a way to display the objects back to the user (in this case the registar
 </div><br>
 
 <h1>Classes</h1>
-<% @courses.each do |course| %>
+<% @classes.each do |class| %>
   <div class="class">
-    <p>Name: <%= course.name %></p><br>
-    <p>Type: <%= course.topic %></p><br>
+    <p>Name: <%= class.name %></p><br>
+    <p>Type: <%= class.topic %></p><br>
   </div><br>
 <% end %>
 ```
 
-In this view, we're using the instance variable `@student` and the reader methods `name` and `grade` to display the student's information.
+In this view, we use the instance variable `@student` and the reader methods `.name` and `.grade` to display the student's information.
 
-We're then iterating over `@courses` to display the name and topic of each class.
+We then iterate over `@courses` to display the name and topic of each class.
 
 ## The Controller
 
-Now, we need two controller actions - one to serve up the form and one to process the data from the form.
+Now, we need two controller actions – one to serve up the form, and one to process the data from the form.
 
-In order to serve the form in the browser, we need a GET request:
+In order to serve the form in the browser, we need a `GET` request:
 
 ```ruby
 get '/' do
@@ -264,13 +266,13 @@ get '/' do
 end
 ```
 
-And now we need a way to process the input from the user, and to display the student and their classes. We process a form with a POST request:
+And now we need a way to process the input from the user and to display the student and their classes. We process a form with a `POST` request:
 
 ```ruby
 post '/student' do
   @student = Student.new(params[:student])
 
-  params[:student][:course].each do |course, details|
+  params[:student][:courses].each do |details|
     Course.new(details)
   end
 
@@ -280,32 +282,25 @@ post '/student' do
 end
 ```
 
-In this controller action, we're creating a new student using the `params[:student]`, which just pulls the information about `name` and `grade`. 
+In this controller action, we first create a new `Student` using the info stored in `params[:student]`, which contains the student's `name`, `grade`, and `courses`.
 
-`params[:student][:course]` gives us a series of hashes that store each individual course information:
+Then we iterate over `params[:student][:courses]`, which is an array containing a series of hashes that each store individual course information:
 
 ```ruby
-{ 
-  "0"=>{
-    "name"=>"AP US HIStory", 
-    "topic"=>"history"
+[ 
+  0 => {
+    "name" => "AP US History", 
+    "topic" => "History"
   }, 
-  "1"=>{
-    "name"=>"ap human geography", 
-    "topic"=>"history"
+  1 => {
+    "name" => "AP Human Geography", 
+    "topic" => "History"
   }
-}
+]
 ```
 
-We can iterate over those nested hashes using `.each` and then use the values to create two instances of our `Course` class.
+During the iterative process, we use the course values passed into the `.each` block to create instances of our `Course` class. We store the instantiated courses in the instance variable `@classes`, making the course information available within our view, `student.erb`.
 
-Lastly, this controller action loads the erb file `student.erb`
-
-
-
-
-
-
-
+Finally, the controller action loads the erb file `student.erb`, and we can see all of the newly-created student and course information in the browser.
 
 <p data-visibility='hidden'>View <a href='https://learn.co/lessons/sinatra-nested-forms-readme' title='Nested Forms Readme'>Nested Forms Readme</a> on Learn.co and start learning to code for free.</p>
