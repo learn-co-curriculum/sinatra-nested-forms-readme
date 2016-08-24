@@ -238,11 +238,11 @@ We need a way to display the objects back to the user (in this case the registra
 
 <div class="student">
   <h3>Name: <%= @student.name %></h3><br>
-  <h4>Height: <%= @student.grade %></h4>
+  <h4>Grade: <%= @student.grade %></h4>
 </div><br>
 
-<h1>Classes</h1>
-<% @classes.each do |class| %>
+<h1>Courses</h1>
+<% @courses.each do |class| %>
   <div class="class">
     <p>Name: <%= class.name %></p><br>
     <p>Type: <%= class.topic %></p><br>
