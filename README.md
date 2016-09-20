@@ -245,7 +245,7 @@ We need a way to display the objects back to the user (in this case the registra
 <% @classes.each do |class| %>
   <div class="class">
     <p>Name: <%= class.name %></p><br>
-    <p>Type: <%= class.topic %></p><br>
+    <p>Topic: <%= class.topic %></p><br>
   </div><br>
 <% end %>
 ```
