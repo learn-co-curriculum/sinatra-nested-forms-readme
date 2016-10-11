@@ -198,10 +198,10 @@ The HTML for the form looks like this:
 <form action="/student" method="post">
   Student Name: <input type="text" name="student[name]">
   Student Grade: <input type="text" name="student[grade]">
-  Course Name: <input type="text" name="student[courses][][name]" />
-  Course Topic: <input type="text" name="student[courses][][topic]" />
-  Course Name: <input type="text" name="student[courses][][name]" />
-  Course Topic: <input type="text" name="student[courses][][topic]" />
+  Course Name: <input type="text" name="student[courses][][name]">
+  Course Topic: <input type="text" name="student[courses][][topic]">
+  Course Name: <input type="text" name="student[courses][][name]">
+  Course Topic: <input type="text" name="student[courses][][topic]">
   <input type="submit">
 </form>
 ```
