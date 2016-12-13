@@ -120,7 +120,7 @@ This makes it easy for us to insert a second nested hash to hold the student's c
 </form>
 ```
 
-We know this form is going to get submitted via a POST request and processed by a controller action. In this case, we've named the action `/student`. You'll notice the `name` attribute of the `input` tag is set up as `student[name]`. This way, when the form gets submitted, the `params` sent to the `/students` controller action will look exactly as we planned.
+We know this form is going to get submitted via a POST request and processed by a controller action. In this case, we've named the action `/student`. You'll notice the `name` attribute of the `input` tag is set up as `student[name]`. This way, when the form gets submitted, the `params` sent to the `/student` controller action will look exactly as we planned.
 
 Now, let's think about how we want a course to fit in a student's `params` hash:
 
