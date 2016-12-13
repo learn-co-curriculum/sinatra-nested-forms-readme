@@ -82,7 +82,7 @@ Before we dive into the HTML, let's think about how we want to structure the dat
 ```ruby
 params = {
   "name" => "Joe",
-  "grade" => 9
+  "grade" => "9"
 }
 ```
 
@@ -94,7 +94,7 @@ Instead, we need to think about restructuring our `params` hash to have nested h
 params = {
   "student" => {
     "name" => "Joe",
-    "grade" => 9,
+    "grade" => "9",
   }
 }
 ```
