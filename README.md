@@ -6,11 +6,11 @@ In this code-along lesson, we'll cover nested forms that can create multiple obj
 
 ## Objectives
 
-1. Create models for each class of objects
-2. Structure data that a controller action will receive to handle multiple objects
-3. Structure the HTML in `.erb` files that handle nesting
-4. Create a view file that displays the objects back to the user
-5. Create two controller actions that serve up the form and process the data from the form
+1. Create models for each class of objects.
+2. Structure data that a controller action will receive to handle multiple objects.
+3. Structure the HTML in `.erb` files that handle nesting.
+4. Create a view file that displays the objects back to the user.
+5. Create two controller actions that serve up the form and process the data from the form.
 
 ## Forms That Create Multiple Objects
 
