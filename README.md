@@ -242,10 +242,10 @@ We need a way to display the objects back to the user (in this case the registra
 </div><br>
 
 <h1>Classes</h1>
-<% @classes.each do |class| %>
-  <div class="class">
-    <p>Name: <%= class.name %></p><br>
-    <p>Topic: <%= class.topic %></p><br>
+<% @classes.each do |a_class| %>
+  <div class="a_class">
+    <p>Name: <%= a_class.name %></p><br>
+    <p>Topic: <%= a_class.topic %></p><br>
   </div><br>
 <% end %>
 ```
@@ -303,6 +303,6 @@ During the iterative process, we use the course values passed into the `.each` b
 
 Finally, the controller action loads the erb file `student.erb`, and we can see all of the newly-created student and course information in the browser.
 
-<p data-visibility='hidden'>View <a href='https://learn.co/lessons/sinatra-nested-forms-readme' title='Nested Forms Readme'>Nested Forms Readme</a> on Learn.co and start learning to code for free.</p>
+<p class='util--hide'>View <a href='https://learn.co/lessons/sinatra-nested-forms-readme'>Sinatra Nested Forms</a> on Learn.co and start learning to code for free.</p>
 
 <p class='util--hide'>View <a href='https://learn.co/lessons/sinatra-nested-forms-readme'>Sinatra Nested Forms</a> on Learn.co and start learning to code for free.</p>
