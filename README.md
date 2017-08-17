@@ -18,13 +18,13 @@ In web apps, we use forms to create objects. When you fill out a form for a dinn
 
 Those are examples of using forms to create a single object, but what if you wanted to use a form to create more than one object? This is where nested forms comes in.
 
-Let's say we're the registrar's office at a school and it's the start of the school year. We need to create each student and their class schedule. It would be tedious to go through the steps to first create the student and then go through the same steps again and again to create each of that student's courses. Wouldn't it be nice to create the student **and** their courses in one go?
+Let's say we're the registrar's office at a school and it's the start of the school year. We need to create each student and their course schedule. It would be tedious to go through the steps to first create the student and then go through the same steps again and again to create each of that student's courses. Wouldn't it be nice to create the student **and** their courses in one go?
 
 ## The Models
 
 To create these two different classes of objects, we need to create two models, `Student` and `Course`.
 
-### `Student` Class
+### `Student` class
 
 Our `Student` class, with `name` and `grade` attributes, will look something like this:
 
@@ -49,7 +49,7 @@ end
 
 In this model, we have an `attr_reader` for `name` and `grade`, and we set the value of those attributes on initialization. We also set up the class method `self.all`, which returns an array containing all of the students.
 
-### `Course` Class
+### `Course` class
 
 Now let's set up the model for the courses each student is taking.
 
@@ -242,17 +242,17 @@ We need a way to display the objects back to the user (in this case the registra
 </div><br>
 
 <h1>Courses</h1>
-<% @courses.each do |class| %>
-  <div class="class">
-    <p>Name: <%= class.name %></p><br>
-    <p>Topic: <%= class.topic %></p><br>
+<% @courses.each do |course| %>
+  <div class="course">
+    <p>Name: <%= course.name %></p><br>
+    <p>Topic: <%= course.topic %></p><br>
   </div><br>
 <% end %>
 ```
 
 In this view, we use the instance variable `@student` and the reader methods `.name` and `.grade` to display the student's information.
 
-We then iterate over `@courses` to display the name and topic of each class.
+We then iterate over `@courses` to display the name and topic of each course.
 
 ## The Controller
 
@@ -266,7 +266,7 @@ get '/' do
 end
 ```
 
-And now we need a way to process the input from the user and to display the student and their classes. We process a form with a `POST` request:
+And now we need a way to process the input from the user and to display the student and their courses. We process a form with a `POST` request:
 
 ```ruby
 post '/student' do
@@ -276,7 +276,7 @@ post '/student' do
     Course.new(details)
   end
 
-  @classes = Course.all
+  @courses = Course.all
 
   erb :student
 end
@@ -299,10 +299,8 @@ Then we iterate over `params[:student][:courses]`, which is an array containing 
 ]
 ```
 
-During the iterative process, we use the course values passed into the `.each` block to create instances of our `Course` class. We store the instantiated courses in the instance variable `@classes`, making the course information available within our view, `student.erb`.
+During the iterative process, we use the course values passed into the `.each` block to create instances of our `Course` class. We store the instantiated courses in the instance variable `@courses`, making the course information available within our view, `student.erb`.
 
 Finally, the controller action loads the erb file `student.erb`, and we can see all of the newly-created student and course information in the browser.
-
-<p data-visibility='hidden'>View <a href='https://learn.co/lessons/sinatra-nested-forms-readme' title='Nested Forms Readme'>Nested Forms Readme</a> on Learn.co and start learning to code for free.</p>
 
 <p class='util--hide'>View <a href='https://learn.co/lessons/sinatra-nested-forms-readme'>Sinatra Nested Forms</a> on Learn.co and start learning to code for free.</p>
