@@ -104,6 +104,7 @@ Now we have a `student` key that stores a hash containing a given student's `nam
 How would we create a hash like this in Ruby? Like so:
 
 ```ruby
+my_hash = {}
 my_hash["student"] = {}
 my_hash["student"]["name"] = "Joe"
 ```
