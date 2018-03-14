@@ -304,4 +304,6 @@ During the iterative process, we use the course values passed into the `.each` b
 
 Finally, the controller action loads the erb file `student.erb`, and we can see all of the newly-created student and course information in the browser.
 
+When you've finished the codealong, make sure to run `learn submit` before moving on to the next lab.
+
 <p class='util--hide'>View <a href='https://learn.co/lessons/sinatra-nested-forms-readme'>Sinatra Nested Forms</a> on Learn.co and start learning to code for free.</p>
