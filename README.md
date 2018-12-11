@@ -10,7 +10,8 @@ In this lesson, we'll cover nested forms that can create multiple objects.
 2.  See how to structure data for a controller action to receive in order to
     handle multiple objects
 3.  See how to structure the HTML in `.erb` files that handle nesting
-4.  Understand how to create a view file that displays the objects back to the user
+4.  Understand how to create a view file that displays the objects back to the
+    user
 5.  Understand how to create two controller actions that serve up the form and
     process the data from the form
 
@@ -95,8 +96,9 @@ The first thing we need is to create the form. For later use in the controller,
 we'll call this file `new.erb`.
 
 Before we dive into the HTML, let's think about how we want to structure the
-data our controller action will receive. Typically, if we were just doing student
-information, we would expect the `params` hash to look something like this:
+data our controller action will receive. Typically, if we were just doing
+student information, we would expect the `params` hash to look something like
+this:
 
 ```ruby
 params = {
