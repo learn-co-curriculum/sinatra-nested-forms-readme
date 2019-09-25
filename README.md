@@ -45,16 +45,16 @@ like this:
 class Student
   attr_reader :name, :grade
 
- STUDENTS = []
+ @@all = []
 
   def initialize(params)
     @name = params[:name]
     @grade = params[:grade]
-    STUDENTS << self
+    @@all << self
   end
 
   def self.all
-    STUDENTS
+    @@all
   end
 
 end
